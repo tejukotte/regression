@@ -38,6 +38,8 @@ def imputeVC():
     #read the file we finished with from before
     df = pd.read_csv('vcOut.csv', na_values='null', header=0, index_col=None)
     
+    plt.scatter_matrix(df)
+    
     #plot the original for reference 
     plot.figure('original')
     plot.hist(df['Year'])    
@@ -58,6 +60,7 @@ def imputeVC():
     plot.figure('scaled')
     plot.hist(df['Year'])
     plot.show()    
+    plt.scatter_matrix(df)
     
     #create dummy variables; used for the region, division and state
     df = pd.get_dummies(df, columns = ['Region', 'Division', 'State'], prefix = '', prefix_sep = '')
@@ -95,13 +98,7 @@ def imputeVC():
     rmse = np.sqrt(metrics.mean_squared_error(y_test, pred))
     print('Hold Out RMSE:', round(rmse, 4))
     
-    # K-Fold Cross Validation ####################################################
-    ''' 'Cross-validation is a resampling procedure used to evaluate machine learning models on a limited data sample.
-    It generally results in a less biased or less optimistic estimate of the model skill than other methods, 
-    such as a simple train/test split.' This can be used for validation (and parameter tuning), but also for getting
-    less biased accuracy/performance metrics for the model (metrics will depend less on how data is split). 
-    From: https://machinelearningmastery.com/k-fold-cross-validation/'''
-    
+      
     # create an empty linear regression object
     lm_k = LinearRegression()
     
@@ -155,7 +152,7 @@ def imputeVC():
     #df.drop(df.columns[3:], axis=1, inplace=True)
     
     # create new variable state that is the column name of the highest value (1) for each row of dummies
-    #df['State'] = state.idxmax(axis=1)   # axis = 1 tells it to get the column name
+    df['State'] = state.idxmax(axis=1)   # axis = 1 tells it to get the column name
     print('\nFinal Dataset:\n',df.head())
     
     
